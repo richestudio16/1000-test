@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Cute Store - Credit & Reviews</title>
+    <!-- Tailwind CSS & Google Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Kanit', sans-serif; transition: background-color 0.3s, color 0.3s; }
+        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(8px); }
+    </style>
+</head>
+<body id="site-body" class="bg-[#faf8f5] text-[#4a4a4a] min-h-screen flex flex-col justify-between relative pb-20">
+
+    <!-- Navbar -->
+    <nav class="glass border-b border-pink-100 px-6 py-4 flex justify-between items-center sticky top-0 z-40 shadow-sm">
+        <div class="flex items-center space-x-2">
+            <span class="text-2xl">🛍️</span>
+            <span class="font-bold text-xl tracking-wide" id="nav-shop-name">My Cute Store</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <button onclick="openReviewModal()" class="bg-pink-400 hover:bg-pink-500 text-white text-xs md:text-sm font-medium px-4 py-2 rounded-full shadow-sm transition flex items-center gap-1">
+                ✍️ เขียนรีวิว
+            </button>
+            <button id="admin-btn" onclick="openAdminAuth()" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-2 rounded-full transition">
+                🔒 Admin
+            </button>
+        </div>
+    </nav>
+
+    <!-- Banner Header -->
+    <header id="header-banner" class="text-center py-12 px-4 shadow-inner transition-all duration-300 relative overflow-hidden bg-pink-100">
+        <!-- รูปแบนเนอร์ถ้ามี -->
+        <div id="banner-img-container" class="hidden mb-4 max-w-2xl mx-auto rounded-2xl overflow-hidden shadow-md">
+            <img id="banner-img" src="" alt="Banner" class="w-full h-48 md:h-64 object-cover">
+        </div>
+        <h1 id="shop-name-display" class="text-3xl md:text-5xl font-bold mb-2">✨ เครดิต & รีวิวการซื้อขาย ✨</h1>
+        <p id="shop-desc-display" class="text-sm md:text-base opacity-80 max-w-lg mx-auto">ขอบพระคุณลูกค้าทุกท่านที่ไว้วางใจอุดหนุนร้านเรานะคะ 💕</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto p-6 w-full flex-grow">
+
+        <!-- ================= ADMIN PANEL ================= -->
+        <div id="admin-panel" class="hidden mb-10 bg-white p-6 rounded-3xl shadow-xl border-2 border-pink-200">
+            <div class="flex justify-between items-center mb-6 pb-3 border-b">
+                <h2 class="text-xl font-bold text-pink-500 flex items-center gap-2">🎀 จัดการระบบหลังบ้าน (Admin)</h2>
+                <button onclick="logoutAdmin()" class="text-xs text-red-400 hover:text-red-600 underline">ออกจากระบบ</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- ตั้งค่าร้านค้า & สี -->
+                <div class="space-y-4">
+                    <h3 class="font-semibold text-gray-700">🎨 ปรับแต่งธีม & สี (ใส่โค้ดสี #)</h3>
+                    <div>
+                        <label class="text-xs text-gray-500">ชื่อร้านค้า</label>
+                        <input type="text" id="cfg-shop-name" class="w-full p-2 border rounded-xl text-sm">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">คำโปรย / สโลแกน</label>
+                        <input type="text" id="cfg-shop-desc" class="w-full p-2 border rounded-xl text-sm">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">ลิงก์รูปแบนเนอร์ (รองรับ Google Drive Link)</label>
+                        <input type="text" id="cfg-banner-url" placeholder="https://drive.google.com/file/d/..." class="w-full p-2 border rounded-xl text-sm">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-xs text-gray-500">สีพื้นหลังเว็บ (#hex)</label>
+                            <input type="text" id="cfg-bg-color" placeholder="#faf8f5" class="w-full p-2 border rounded-xl text-sm">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-500">สีข้อความหลัก (#hex)</label>
+                            <input type="text" id="cfg-text-color" placeholder="#4a4a4a" class="w-full p-2 border rounded-xl text-sm">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-500">สี Banner Header (#hex)</label>
+                            <input type="text" id="cfg-header-bg" placeholder="#fce7f3" class="w-full p-2 border rounded-xl text-sm">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-500">สีข้อความหัวข้อ (#hex)</label>
+                            <input type="text" id="cfg-header-text" placeholder="#db2777" class="w-full p-2 border rounded-xl text-sm">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">ลิงก์ไฟล์เพลง MP3 (สำหรับเพลง background)</label>
+                        <input type="text" id="cfg-music-url" placeholder="https://.../music.mp3" class="w-full p-2 border rounded-xl text-sm">
+                    </div>
+                    <button onclick="saveSettings()" class="w-full bg-pink-400 hover:bg-pink-500 text-white font-medium py-2 rounded-xl text-sm shadow">
+                        💾 บันทึกการตั้งค่า
+                    </button>
+                </div>
+
+                <!-- เพิ่มเครดิตโดย Admin -->
+                <div class="space-y-4 bg-pink-50/50 p-4 rounded-2xl border border-pink-100">
+                    <h3 class="font-semibold text-gray-700">➕ เพิ่มเครดิตใหม่ (โดย Admin)</h3>
+                    <form onsubmit="handleAdminAddCredit(event)" class="space-y-3">
+                        <input type="text" id="adm-cust-name" placeholder="ชื่อลูกค้า" required class="w-full p-2 border rounded-xl text-sm">
+                        <textarea id="adm-cust-review" placeholder="ข้อความรีวิว" required class="w-full p-2 border rounded-xl text-sm h-20"></textarea>
+                        <input type="text" id="adm-cust-img" placeholder="ลิงก์รูปหลักฐาน/สลิป (รองรับ Google Drive)" class="w-full p-2 border rounded-xl text-sm">
+                        <select id="adm-cust-rating" class="w-full p-2 border rounded-xl text-sm">
+                            <option value="⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐ (5/5)</option>
+                            <option value="⭐⭐⭐⭐">⭐⭐⭐⭐ (4/5)</option>
+                            <option value="⭐⭐⭐">⭐⭐⭐ (3/5)</option>
+                        </select>
+                        <button type="submit" class="w-full bg-gray-800 hover:bg-black text-white font-medium py-2 rounded-xl text-sm shadow">
+                            เพิ่มเครดิต
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+                <!-- ================= GUEST VIEW ================= -->
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-lg font-semibold">เครดิตทั้งหมด (<span id="credit-count">0</span>)</h2>
+        </div>
+
+        <!-- Grid แสดงรายการเครดิต -->
+        <div id="credit-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-6 text-xs opacity-60 border-t mt-10">
+        © Store Credit System — Cute & Clean Style
+    </footer>
+
+    <!-- ================= FLOATING MUSIC PLAYER (มุมขวาล่าง) ================= -->
+    <div class="fixed bottom-5 right-5 z-50 glass p-3 rounded-full shadow-lg border border-pink-200 flex items-center gap-3 transition hover:scale-105">
+        <button id="music-play-btn" onclick="toggleMusic()" class="w-10 h-10 bg-pink-400 text-white rounded-full flex items-center justify-center text-sm shadow">
+            ▶️
+        </button>
+        <div class="pr-2 text-xs hidden sm:block">
+            <div class="font-medium text-gray-700">Background Music</div>
+            <div class="text-[10px] text-gray-400" id="music-status">กดเพื่อเปิดเพลง</div>
+        </div>
+        <audio id="bg-audio" loop></audio>
+    </div>
+
+    <!-- MODAL: เขียนรีวิว (Guest) -->
+    <div id="review-modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white p-6 rounded-3xl max-w-md w-full shadow-2xl relative">
+            <h3 class="text-lg font-bold text-gray-800 mb-4 text-center">✍️ เขียนรีวิวให้ทางร้าน</h3>
+            <form onsubmit="handleGuestReview(event)" class="space-y-3">
+                <div>
+                    <label class="text-xs text-gray-500">ชื่อของคุณ / ชื่อผู้ใช้</label>
+                    <input type="text" id="gst-name" required placeholder="เช่น คุณ มินตรา" class="w-full p-2.5 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-300">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-500">ความประทับใจ / รีวิว</label>
+                    <textarea id="gst-review" required placeholder="ได้รับสินค้าแล้ว น่ารักมากๆ เลยค่ะ..." class="w-full p-2.5 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-300 h-24"></textarea>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-500">ลิงก์รูปหลักฐาน/สลิป (ใส่ลิงก์ Google Drive หรือรูปทั่วไปได้)</label>
+                    <input type="text" id="gst-img" placeholder="https://drive.google.com/file/d/..." class="w-full p-2.5 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-300">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-500">ให้คะแนนร้านค้า</label>
+                    <select id="gst-rating" class="w-full p-2.5 border rounded-xl text-sm outline-none">
+                        <option value="⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐ (5 ดาว)</option>
+                        <option value="⭐⭐⭐⭐">⭐⭐⭐⭐ (4 ดาว)</option>
+                        <option value="⭐⭐⭐">⭐⭐⭐ (3 ดาว)</option>
+                    </select>
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button type="button" onclick="closeReviewModal()" class="w-1/2 py-2.5 text-sm bg-gray-100 text-gray-600 rounded-xl">ยกเลิก</button>
+                    <button type="submit" class="w-1/2 py-2.5 text-sm bg-pink-400 text-white font-medium rounded-xl hover:bg-pink-500 shadow">ส่งรีวิว</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: เข้าสู่ระบบ Admin -->
+    <div id="auth-modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white p-6 rounded-3xl max-w-xs w-full shadow-2xl text-center">
+            <h3 class="text-lg font-bold text-gray-800 mb-2">🔑 ยืนยันตัวตน Admin</h3>
+            <p class="text-xs text-gray-400 mb-4">(รหัสผ่านทดสอบ: <b>1234</b>)</p>
+            <input type="password" id="admin-pass" placeholder="กรอกรหัสผ่าน" class="w-full p-2.5 border rounded-xl mb-4 text-center text-sm outline-none">
+            <div class="flex gap-2">
+                <button onclick="closeAdminAuth()" class="w-1/2 py-2 text-sm bg-gray-100 text-gray-600 rounded-xl">ยกเลิก</button>
+                <button onclick="loginAdmin()" class="w-1/2 py-2 text-sm bg-pink-400 text-white font-medium rounded-xl">ตกลง</button>
+            </div>
+        </div>
+    </div>
+        <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // ข้อมูลการตั้งค่าเริ่มต้น
+        const defaultSettings = {
+            shopName: "My Cute Store",
+            shopDesc: "ขอบพระคุณลูกค้าทุกท่านที่ไว้วางใจอุดหนุนร้านเรานะคะ 💕",
+            bannerUrl: "",
+            bgColor: "#faf8f5",
+            textColor: "#4a4a4a",
+            headerBg: "#fce7f3",
+            headerText: "#db2777",
+            musicUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+        };
+
+        // ข้อมูลเครดิตเริ่มต้น
+        const defaultCredits = [
+            {
+                id: 1,
+                name: "คุณ K. Somchai",
+                review: "ได้รับของแล้ว แพ็คมาน่ารักมากๆ ส่งไวสุดๆ เลยค่ะ!",
+                rating: "⭐⭐⭐⭐⭐",
+                img: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=500&q=80",
+                date: "28 ก.ย. 2026"
+            }
+        ];
+
+        let settings = JSON.parse(localStorage.getItem('cute_store_settings')) || defaultSettings;
+        let credits = JSON.parse(localStorage.getItem('cute_store_credits')) || defaultCredits;
+        let isAdmin = false;
+        let isPlaying = false;
+
+        window.onload = function() {
+            applySettings();
+            renderCredits();
+        };
+
+        // ฟังก์ชันแปลงลิงก์ Google Drive เป็น Direct View Image Link
+        function parseDriveLink(url) {
+            if (!url) return '';
+            if (url.includes('drive.google.com')) {
+                const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+                if (match && match[1]) {
+                    return `https://lh3.googleusercontent.com/d/${match[1]}`;
+                }
+            }
+            return url;
+        }
+
+        // ประยุกต์ใช้การตั้งค่าธีมสีและข้อความ
+        function applySettings() {
+            document.getElementById('nav-shop-name').innerText = settings.shopName;
+            document.getElementById('shop-name-display').innerText = settings.shopName;
+            document.getElementById('shop-desc-display').innerText = settings.shopDesc;
+            document.getElementById('page-title').innerText = settings.shopName + " - Credit & Reviews";
+
+            // สไตล์สี
+            document.getElementById('site-body').style.backgroundColor = settings.bgColor;
+            document.getElementById('site-body').style.color = settings.textColor;
+            document.getElementById('header-banner').style.backgroundColor = settings.headerBg;
+            document.getElementById('shop-name-display').style.color = settings.headerText;
+
+            // รูป Banner
+            const bannerContainer = document.getElementById('banner-img-container');
+            const bannerImg = document.getElementById('banner-img');
+            if (settings.bannerUrl) {
+                bannerImg.src = parseDriveLink(settings.bannerUrl);
+                bannerContainer.classList.remove('hidden');
+            } else {
+                bannerContainer.classList.add('hidden');
+            }
+
+            // เพลง Background
+            const audio = document.getElementById('bg-audio');
+            if (settings.musicUrl && audio.src !== settings.musicUrl) {
+                audio.src = settings.musicUrl;
+            }
+
+            // ใส่ค่าลงในฟอร์ม Admin
+            document.getElementById('cfg-shop-name').value = settings.shopName;
+            document.getElementById('cfg-shop-desc').value = settings.shopDesc;
+            document.getElementById('cfg-banner-url').value = settings.bannerUrl;
+            document.getElementById('cfg-bg-color').value = settings.bgColor;
+            document.getElementById('cfg-text-color').value = settings.textColor;
+            document.getElementById('cfg-header-bg').value = settings.headerBg;
+            document.getElementById('cfg-header-text').value = settings.headerText;
+            document.getElementById('cfg-music-url').value = settings.musicUrl;
+        }
+
+        // แสดงผลเครดิต
+        function renderCredits() {
+            const container = document.getElementById('credit-container');
+            document.getElementById('credit-count').innerText = credits.length;
+            container.innerHTML = '';
+
+            credits.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded-3xl shadow-sm border border-pink-100 flex flex-col justify-between transition hover:shadow-md relative";
+                
+                const imgSrc = parseDriveLink(item.img) || 'https://via.placeholder.com/400x300/fce7f3/db2777?text=No+Image';
+
+                card.innerHTML = `
+                    <div>
+                        <div class="h-48 bg-pink-50 rounded-2xl overflow-hidden mb-3">
+                            <img src="${imgSrc}" alt="หลักฐาน" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-xs text-pink-500 font-medium bg-pink-50 px-2.5 py-0.5 rounded-full">ส่งของเรียบร้อย</span>
+                            <span class="text-xs">${item.rating}</span>
+                        </div>
+                        <h4 class="font-semibold text-gray-800 text-base">${item.name}</h4>
+                        <p class="text-xs text-gray-500 mt-1 line-clamp-3">${item.review}</p>
+                    </div>
+                    <div class="mt-4 pt-2 border-t flex justify-between items-center text-[10px] text-gray-400">
+                        <span>${item.date}</span>
+                        ${isAdmin ? `<button onclick="deleteCredit(${index})" class="text-red-400 hover:text-red-600 font-medium">ลบรายการ</button>` : ''}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // บันทึกการตั้งค่า Admin
+        function saveSettings() {
+            settings.shopName = document.getElementById('cfg-shop-name').value;
+            settings.shopDesc = document.getElementById('cfg-shop-desc').value;
+            settings.bannerUrl = document.getElementById('cfg-banner-url').value;
+            settings.bgColor = document.getElementById('cfg-bg-color').value || "#faf8f5";
+            settings.textColor = document.getElementById('cfg-text-color').value || "#4a4a4a";
+            settings.headerBg = document.getElementById('cfg-header-bg').value || "#fce7f3";
+            settings.headerText = document.getElementById('cfg-header-text').value || "#db2777";
+            settings.musicUrl = document.getElementById('cfg-music-url').value;
+
+            localStorage.setItem('cute_store_settings', JSON.stringify(settings));
+            applySettings();
+            alert('บันทึกการตั้งค่าเรียบร้อยแล้ว ✨');
+        }
+
+        // Guest เพิ่มรีวิว
+        function handleGuestReview(e) {
+            e.preventDefault();
+            const newCredit = {
+                id: Date.now(),
+                name: document.getElementById('gst-name').value,
+                review: document.getElementById('gst-review').value,
+                rating: document.getElementById('gst-rating').value,
+                img: document.getElementById('gst-img').value,
+                date: new Date().toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' })
+            };
+            credits.unshift(newCredit);
+            localStorage.setItem('cute_store_credits', JSON.stringify(credits));
+            renderCredits();
+            closeReviewModal();
+            alert('ขอบคุณสำหรับรีวิวนะคะ 💕');
+        }
+
+        // Admin เพิ่มเครดิต
+        function handleAdminAddCredit(e) {
+            e.preventDefault();
+            const newCredit = {
+                id: Date.now(),
+                name: document.getElementById('adm-cust-name').value,
+                review: document.getElementById('adm-cust-review').value,
+                rating: document.getElementById('adm-cust-rating').value,
+                img: document.getElementById('adm-cust-img').value,
+                date: new Date().toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' })
+            };
+            credits.unshift(newCredit);
+            localStorage.setItem('cute_store_credits', JSON.stringify(credits));
+            renderCredits();
+            alert('เพิ่มเครดิตเรียบร้อย!');
+        }
+
+        // ลบเครดิต
+        function deleteCredit(index) {
+            if (confirm('คุณต้องการลบเครดิตนี้ใช่หรือไม่?')) {
+                credits.splice(index, 1);
+                localStorage.setItem('cute_store_credits', JSON.stringify(credits));
+                renderCredits();
+            }
+        }
+
+        // ระบบเครื่องเล่นเพลง
+        function toggleMusic() {
+            const audio = document.getElementById('bg-audio');
+            const btn = document.getElementById('music-play-btn');
+            const status = document.getElementById('music-status');
+
+            if (!audio.src) {
+                alert('ยังไม่ได้ใส่ลิงก์เพลงในระบบหลังบ้าน');
+                return;
+            }
+
+            if (isPlaying) {
+                audio.pause();
+                btn.innerText = '▶️';
+                status.innerText = 'กดเพื่อเปิดเพลง';
+            } else {
+                audio.play().then(() => {
+                    btn.innerText = '⏸️';
+                    status.innerText = 'กำลังเล่นเพลง...';
+                }).catch(() => {
+                    alert('ไม่สามารถเล่นไฟล์เพลงนี้ได้ กรุณาตรวจสอบลิงก์ MP3');
+                });
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // Modal Handlers
+        function openReviewModal() { document.getElementById('review-modal').classList.remove('hidden'); document.getElementById('review-modal').classList.add('flex'); }
+        function closeReviewModal() { document.getElementById('review-modal').classList.add('hidden'); document.getElementById('review-modal').classList.remove('flex'); }
+        function openAdminAuth() { document.getElementById('auth-modal').classList.remove('hidden'); document.getElementById('auth-modal').classList.add('flex'); }
+        function closeAdminAuth() { document.getElementById('auth-modal').classList.add('hidden'); document.getElementById('auth-modal').classList.remove('flex'); }
+
+        function loginAdmin() {
+            const pass = document.getElementById('admin-pass').value;
+            if (pass === '1234') {
+                isAdmin = true;
+                document.getElementById('admin-panel').classList.remove('hidden');
+                document.getElementById('admin-btn').innerText = '🔓 สิทธิ์ Admin';
+                closeAdminAuth();
+                renderCredits();
+            } else {
+                alert('รหัสผ่านไม่ถูกต้อง');
+            }
+        }
+
+        function logoutAdmin() {
+            isAdmin = false;
+            document.getElementById('admin-panel').classList.add('hidden');
+            document.getElementById('admin-btn').innerText = '🔒 Admin';
+            renderCredits();
+        }
+    </script>
+</body>
+</html>
